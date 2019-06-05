@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Apr 14 18:30:07 2019
+Created on Sun Apr 21 18:18:04 2019
 
 @author: Tank
 """
 
-# finalproject2.py
-# Phase 1 of final project
-# Date: 04/14/2019
+# finalproject3.py
+# Phase 3 of final project
+# Date: 04/21/2019
 # Author: Ryan Leibering
 
 import pandas as pd
@@ -67,7 +67,17 @@ def recalculation(data,u2cluster,u4cluster):
     u4i = pd.DataFrame(u4i,index = data.columns[1:10])
     u4i = u4i.T
     return u2i, u4i
-        
+
+def errorrate(results):
+    #divide the results into their predicted classes
+    pre2 = results[results["Predicted Class"]==2]
+    pre4 = results[results["Predicted Class"]==4]
+    #create error rates by looking at the length of results that conflict within the predicted classes series
+    errorb= len(pre4[pre4["CLASS"]==2])/len(results[results["Predicted Class"]==2])
+    errorm= len(pre2[pre2["CLASS"]==4])/len(results[results["Predicted Class"]==4])
+    totalerror= (len(pre4[pre4["CLASS"]==2])+len(pre2[pre2["CLASS"]==4]))/len(results["CLASS"])
+    return(errorb,errorm,totalerror)
+    
             
 
 def main():
@@ -129,11 +139,17 @@ def main():
         u2results.append(u2[i][0])
     for i in u4[u4.columns[:]]:
         u4results.append(u4[i][0])
+    #generate error rates
+    errorb,errorm,totalerror = errorrate(results)
     print ("Final Mean")
     print()
     print("U2:",u2results)
     print()
     print("U4:",u4results)
+    print()
+    print("Benign Cluster Error Rate: {0}".format(errorb))
+    print("Malign Cluster Error Rate: {0}".format(errorm))
+    print("Total Error Rate:          {0}".format(totalerror))
     print()
     print("Cluster Assignment")
     print(results[0:21])
